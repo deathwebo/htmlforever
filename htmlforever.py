@@ -7,6 +7,9 @@ def tag(name="div", attrs=[], content="", rhs=""):
 
   voidTags = ["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]
 
+  if not all(len(t) == 2 for t in tag_attrs):
+    raise ValueError("All tuples in attrs must be of size 2")
+
   def attributes(attrs):
     return "".join(
       map(lambda attr:
@@ -55,38 +58,38 @@ def link(url="#", text="", title="", rhs=""):
   text = text or url
   title = title or text
 
-  return tag("a", [["href", url], ["title", title]], text) + rhs
+  return tag("a", [("href", url), ("title", title)], text) + rhs
 
 def embed(url="#", width="560", height="315", rhs=""):
   return tag('div', [
-    ['style', Template('''
+    ('style', Template('''
       position: relative;
       width: 100%;
       padding-bottom: calc(100% / ($width / $height));
-    ''').safe_substitute(width=width, height=height)]
+    ''').safe_substitute(width=width, height=height))
   ],
     tag('iframe', [
-      ['src', url],
-      ['width', width],
-      ['height', height],
-      ['frameborder', "0"],
-      ['style', '''
+      ('src', url),
+      ('width', width),
+      ('height', height),
+      ('frameborder', "0"),
+      ('style', '''
         position: absolute;
         width: 100%;
         height: 100%;
         top: 50%;
         left: 50%;
         transform: translateX(-50%) translateY(-50%);
-      ''']
+      ''')
     ])) + rhs
 
 # Templating Snippets
 def head(title="", rhs=""):
   return doctype(
-    tag("meta", [["charset", "utf-8"]],
+    tag("meta", [("charset", "utf-8")],
       tag("meta", [
-        ["name", "viewport"],
-        ["content", "width=device-width, initial-scale=1"]
+        ("name", "viewport"),
+        ("content", "width=device-width, initial-scale=1")
       ],
         tag("title", [], title)))) + rhs
 
@@ -112,7 +115,7 @@ def mixin(name="mixin", rhs=""):
 
 def eqcss(rhs=""):
   return tag("script", [
-    ["src", "https://unpkg.com/eqcss/EQCSS.min.js"]
+    ("src", "https://unpkg.com/eqcss/EQCSS.min.js")
   ]) + rhs
 
 def eqcssDemo(content="", rhs=""):
@@ -121,22 +124,22 @@ def eqcssDemo(content="", rhs=""):
 
 def reprocss(rhs=""):
   return tag("script", [
-    ["src", "https://unpkg.com/reprocss/reprocss.js"]
+    ("src", "https://unpkg.com/reprocss/reprocss.js")
   ]) + rhs
 
 def reprocssDemo(content="", rhs=""):
-  return tag("style", [["process", "auto"]], "\n\n " + content + " \n\n",
+  return tag("style", [("process", "auto")], "\n\n " + content + " \n\n",
     reprocss()) + rhs
 
 def selectory(rhs=""):
-  return tag("script", [["src", "https://unpkg.com/cssplus/selectory.js"]]) + rhs
+  return tag("script", [("src", "https://unpkg.com/cssplus/selectory.js")]) + rhs
 
 def selectoryDemo(content="", rhs=""):
   return tag("style", [], "\n\n " + content + " \n\n",
            selectory()) + rhs
 
 def jsincss(plugins=[], content="", rhs=""):
-  return tag("script", [["type", "module"]],\
+  return tag("script", [("type", "module")],
     "\n"\
     + "  import jsincss from 'https://unpkg.com/jsincss/index.vanilla.js'\n"\
     + "".join(map(lambda plugin:
@@ -150,26 +153,26 @@ def jsincss(plugins=[], content="", rhs=""):
 
 def todo(title="", rhs=""):
   return doctype(
-    tag("meta", [["charset", "utf-8"]],
+    tag("meta", [("charset", "utf-8")],
       tag("meta", [
-        ["name", "viewport"],
-        ["content", "width=device-width, initial-scale=1"]
+        ("name", "viewport"),
+        ("content", "width=device-width, initial-scale=1")
       ],
         tag("link", [
-          ["rel", "stylesheet"],
-          ["href", "https://fonts.googleapis.com/css?family=Cormorant+Garamond|Crimson+Text"]
+          ("rel", "stylesheet"),
+          ("href", "https://fonts.googleapis.com/css?family=Cormorant+Garamond|Crimson+Text")
         ],
           tag("link", [
-            ["rel", "stylesheet"],
-            ["href", "https://tomhodgins.github.io/todoml/style.css"]
+            ("rel", "stylesheet"),
+            ("href", "https://tomhodgins.github.io/todoml/style.css")
           ],
             tag("script", [
-              ["src", "https://tomhodgins.github.io/todoml/todoml.js"]
+              ("src", "https://tomhodgins.github.io/todoml/todoml.js")
             ], "",
               tag("title", [], title,
                 tag("body", [],
                   "\n"
-                  + tag("script", [["type", "text/todo"]], Template('''
+                  + tag("script", [("type", "text/todo")], Template('''
 
   # $title
 
